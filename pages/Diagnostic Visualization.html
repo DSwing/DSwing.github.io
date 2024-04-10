@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="generator" content="Pelican" />
-        <title>Diagnostic Visualization</title>
+        <title>Coronary Artery Desease Diagnostic Visualization</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
 </head>
 
@@ -12,17 +12,16 @@
         <header id="banner" class="body">
                 <h1><a href="/">Data Science</a></h1>
                 <nav><ul>
-                    <li class="active"><a href="/pages/altair-interactive.html">Diagnostic Visualization</a></li>
+                    <li class="active"><a href="/pages/Diagnostic Visualization.html">Coronary Artery Desease Diagnostic Visualization</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 <section id="content" class="body">
-    <h1 class="entry-title">Diagnostic Visualization</h1>
+    <h1 class="entry-title">Coronary Artery Desease Diagnostic Visualization</h1>
     
-    <h1>Coronary Artery Disease</h1>
-<p>Patients' demographic and clinical characteristics affect the diagnostic accuracy of cardiologists.
+    <p>Patients' demographic and clinical characteristics affect the diagnostic accuracy of cardiologists.
 The following visualization is derived from the clinical and noninvasive test results of 303 patients undergoing angiography at the Cleveland Clinic in Cleveland, Ohio. The data present a set of clinical and exercise test results compared with the diagnostic findings of coronary angiography. Only the demographic and clinical data have been utilized for the visualization, creating a useful tool for physician screening.</p>
-<h1>Data</h1>
 <p>The data (<a href="https://archive.ics.uci.edu/dataset/45/heart+disease">https://archive.ics.uci.edu/dataset/45/heart+disease</a>) have been presented in the article titled "<a href="https://www.semanticscholar.org/paper/a7d714f8f87bfc41351eb5ae1e5472f0ebbe0574">International Application of a New Probability Algorithm for the Diagnosis of Coronary Artery Disease</a>" by R. Detrano et al. (1989), published in the American Journal of Cardiology.  </p>
+<h1>Data, Goals and Tasks</h1>
 <p>The dataset is a set of 14 attributes for 303 instances.</p>
 <ol>
 <li>age: age in years</li>
@@ -52,6 +51,18 @@ The following visualization is derived from the clinical and noninvasive test re
     Value 0: &lt; 50% diameter narrowing<br>
     Value 1,2,3,4: &gt; 50% diameter narrowing  </li>
 </ol>
+<p>A conducted semistructured interview to a physician, gave us a better understing of the data and a definition of goals and tasks.  </p>
+<p>Attributes from 1 to 7 (age, sex, cp, trestbps, chol, fbs, restecg) are related to demographical and clinical data.
+Attributes from 8 to 13 (thalach, exang, oldpeak, slope, ca, thal)refers to the exercise test data.
+Attribute 14 (num) represents the diagnosis results, based on coronary angiography.  </p>
+<p>Multivariable exploratory analysis of demographical and clinical test data has the potential to become a useful tool for assisting in the diagnosis of coronary artery disease, guiding patients towards subsequent steps such as stress tests and more in-depth analyses where deemed appropriate.
+Since general practitioners are functioning as gatekeepers and decide which patients must be referred to the cardiologist, our goal is to create a tool that can assist them in their role.<br>
+A part from the difficulty to create a statistical model to assess the risk of disease, physicians are reluctant to trust them. They prefer to have a clear view of the hystorical data, as much complete as possible, to apply their critical judgement per case.<br>
+Our tasks are:<br>
+1. visualize distribution of the demographical and clinical data in the dataset (attributes 1 to 7 of the dataset) <br>
+2. let the user filter and analyse a subset of data, based on any of the attributes considered<br>
+3. let the user intersect multiple filters and view the results<br>
+4. show the percentages of diagnosis results distinguishing them by severity level (num from 0 to 4)  </p>
 <h1>The interactive visualization</h1>
 <p><em>Instructions</em><br>
 <em>Filter the data using the charts on the left</em><br>
@@ -105,6 +116,45 @@ article {
     })(vegaEmbed);
 
   </script>
+
+<h1>Key elements of the design</h1>
+<p>The visualization is realized using Altair, a declarative statistical visualization library for Python, built on top of the Vega and Vega-Lite visualization grammars. Altair supports interactive visualizations, making it easy to explore and analyze data interactively, facilitating insights discovery.</p>
+<h2>Task 1 - visualize distribution of the demographical and clinical data in the dataset</h2>
+<ul>
+<li>Categorical variables: Sex, cp(Symptoms), fps(fasting blood sugar), restecg: resting electrocardiographic results.
+The number of patients is represented by a bar chart for each variable.</li>
+<li>Quantitative variable: age
+The ages are grouped and the number of patients in each group is diplayed in a bar chart</li>
+<li>Continuous variables: chol(serum cholestoral), trestbps(resting blood pressure)<br>
+The distribution is represented by a tick chart</li>
+</ul>
+<h2>Task 2 - let the user filter and analyse a subset of data</h2>
+<p>Multiple point selection is applied to the bar charts of the categorical variables (Sex, Symptoms, Fasting blood sugar, Resting ECG)
+Interval selection is applied to the tick charts of continuos variables</p>
+<h2>Task 3 - let the user intersect multiple filters</h2>
+<p>Altair makes easy to implement crossfiltering among the charts. Every selection applied to one chart is reflected on all the others, higlighted in red on the overall grey chart, so it is possible to appreciate the distribution of the selected data in respect to the overall data distribution. Multiple filters can be applied simultaneously, to incrementally filter the data on many variables.</p>
+<h2>Task 4 - show the percentages of different levels of angiography results</h2>
+<p>Variable num is an ordinal variable, representing severity of angiography results (range from 0 to 4). 
+The num variable is mapped to color in a stacked normalized histogram. The x channel encodes the binned age variable, the y channel encodes the percentage of patients in the category. An additional companion visualization is represented by a single stacked bar chart, cumulating the values for all the age groups for a summary view.
+The histograms are filtered based on the selections applied, to show the distribution for different groups of patients.</p>
+<h1>Final evaluation</h1>
+<p>To evaluate the usability and insights (number and depth) of the tool, a talk-aloud strategy was applied to a group of three colleagues.
+The main results can be summarised:<br>
+- Explanation and Independence Time: This involves assessing the time needed to explain the tool's functionality and features to the participants and how quickly they become independent in using it. This metric helps gauge the tool's learnability and user-friendliness. All the partecipant were indipendent in the usage in less then 10 minutes.</p>
+<ul>
+<li>
+<p>Number of Insights: This metric focuses on quantifying the number of unique insights generated by participants while interacting with the tool. All the partecipants were able to filter the clinical data to identify the risk of coronary artery disease based on many parameters.</p>
+</li>
+<li>
+<p>Depth of Insights: Assessing the depth of each insight involves evaluating the complexity and richness of the observations made by participants. Cross filtering and multiple selections has proved to be very effective to guide an incremental analysis: adding one filter a time, new questions about the impact of other variables can be addressed adding other filters. The depth of Insight can be estimated equal to the number of filters effectively used by the users. 5 at average.  </p>
+</li>
+<li>
+<p>User Suggestions and Impressions: The users appreciated the simplicity of the tool and the clarity of the visualization. They also expressed appreciation for the graphical choices and the ease of use.</p>
+</li>
+</ul>
+<h1>Conclusion</h1>
+<p>The visualization tool was designed with usability and clarity in mind, offering an interactive interface that facilitates the discovery of new insights. Leveraging Altair enabled seamless selection and cross-filtering functionalities, enhancing user interaction. The strategic use of simple chart types proved successful, presenting data in a comprehensive yet accessible manner. Physicians can find the visualization to be a valuable diagnostic tool, providing a comprehensive understanding of study results and aiding in the diagnosis of coronary artery disease.<br>
+In this study, we focused on demographic and clinical data. Future iterations of the visualization could incorporate additional variables, such as thalach (maximum heart rate), exang (exercise-induced angina), oldpeak (ST depression induced by exercise), slope (the slope of the peak exercise ST segment), ca (results of fluoroscopy), and thal (thallium stress testing result). By including these variables, the tool could offer even deeper insights into the data and further support clinical decision-making.</p>
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
